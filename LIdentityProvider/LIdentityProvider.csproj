@@ -66,7 +66,7 @@
     <Compile Include="LIdentityProvider.svc.cs">
       <DependentUpon>LIdentityProvider.svc</DependentUpon>
     </Compile>
-    <Compile Include="LIdentityProvider.cs" />
+    <Compile Include="ILIdentityProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
