@@ -33,6 +33,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,7 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collection\LCollection.cs" />
+    <Compile Include="Document\LDocument.cs" />
+    <Compile Include="Hierarchy\LHierarchy.cs" />
+    <Compile Include="Identity\LIdentity.cs" />
+    <Compile Include="Logic.cs" />
+    <Compile Include="LRI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\LDocumentAccessControlList.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Message\" />
+    <Folder Include="UI\Workspace\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
