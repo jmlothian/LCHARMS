@@ -7,10 +7,26 @@ using System.Runtime.Serialization;
 namespace LCHARMS.Document
 {
     [DataContract]
-    public enum DocumentType { INDEX = 0, COLLECTION, HIERARCHY, LRT };  //some headers are index only, in the case of deleted files
+    public enum DocumentType { 
+        [EnumMember]
+        INDEX = 0,
+        [EnumMember]
+        COLLECTION,
+        [EnumMember]
+        HIERARCHY,
+        [EnumMember]
+        LRT 
+    };  //some headers are index only, in the case of deleted files
 
     [DataContract]
-    public enum DocumentPartDataType {NONE,BASE_64, FILE_SYSTEM_LINK };
+    public enum DocumentPartDataType {
+        [EnumMember]
+        NONE,
+        [EnumMember]
+        BASE_64,
+        [EnumMember]
+        FILE_SYSTEM_LINK 
+    };
 
     [DataContract]
     public class LDocumentHeader
@@ -35,6 +51,17 @@ namespace LCHARMS.Document
         public DocumentType DocType = DocumentType.INDEX;
         [DataMember]
         public int DocSubType = -1;
+        //Fully Qualified Document Type
+        // Examples: 
+        //   image.compressed.lossless.png
+        //   text.lrt
+        //   text.xml
+        //   data.table.csv
+        //   data.table.sql.mysql.rows
+        //   data.document.nosql.json
+        //   data.list.csv
+        [DataMember]
+        public string FQDT = "";
         [DataMember]
         public bool IsDeleted = false;
         [DataMember]
@@ -50,6 +77,12 @@ namespace LCHARMS.Document
     [DataContract]
     public class LDocumentPart
     {
+        //internal ID for this part
+        [DataMember]
+        public string _id = "";
+        [DataMember]
+        public string _rev = "";
+
         [DataMember]
         public string DocumentID = "";
         [DataMember]
@@ -75,6 +108,10 @@ namespace LCHARMS.Document
         public int Revision = 1;
         [DataMember]
         public int CumulativeRevision = 1;
+        [DataMember]
+        public bool VersionOnly = true;
+        [DataMember]
+        public bool Latest = true;
     }
 
     public class VersionInformation

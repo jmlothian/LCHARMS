@@ -31,7 +31,7 @@ namespace LIdentityProvider.Session
     public static class SessionManager
     {
         public static SortedDictionary<string, SessionInfo> Sessions = new SortedDictionary<string, SessionInfo>();
-        public static string NewSession(LIdentity ID)
+        public static SessionInfo NewSession(LIdentity ID)
         {
             Random rnd = new Random();
             SessionInfo info = new SessionInfo();
@@ -43,7 +43,7 @@ namespace LIdentityProvider.Session
                 sessionkey = Guid.NewGuid().ToString();
             info.SessionKey = sessionkey;
             Sessions[info.SessionKey] = info;
-            return sessionkey;
+            return info;
         }
         public static bool VerifySessionKey(string sessionkey, LRI UserLRI)
         {

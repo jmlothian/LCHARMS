@@ -54,6 +54,9 @@ namespace LCHARMS.Identity
         public string OwnerUserID = "";
         [DataMember]
         public string OwnerDomainLRI = "";
+        [DataMember]
+        public string KeyForParent = "";
+
     }
 
     [DataContract]

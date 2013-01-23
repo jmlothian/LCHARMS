@@ -34,9 +34,9 @@ namespace LIdentityProvider
         //returns session info
         [OperationContract]
         SessionInfo LoginID(string UserLRI, string passwordhash, bool LoginChildren = false);
-        
+
         [OperationContract]
-        bool ValidateParentID(string ChildIDLRI, string ParentKey, string KeyFromChild);
+        bool ValidateParentID(string ChildIDLRI, string KeyFromChild);
         [OperationContract]
         bool LoginChild(string ParentLRI, string ChildUserLRI, string KeyFromChild, bool LoginChildren = true);
 
@@ -45,6 +45,8 @@ namespace LIdentityProvider
         [OperationContract]
         bool Ping();
 
+        [OperationContract]
+        LRI ParseLRI(string lri, bool IsURI = false);
     
     }
 

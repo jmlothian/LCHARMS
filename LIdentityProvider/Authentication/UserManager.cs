@@ -4,14 +4,21 @@ using System.Linq;
 using System.Web;
 using LCHARMS.Identity;
 using LCHARMS;
+using LCHARMS.DB.CouchDB;
+using System.Runtime.Serialization;
 
 namespace LIdentityProvider.Authentication
 {
+    [DataContract]
     public class UserInfo
     {
+        [DataMember]
         public string passwordHash = "";
+        [DataMember]
         public LIdentity Identity = new LIdentity();
+        [DataMember]
         public Dictionary<string, ChildIdentity> Children = new Dictionary<string, ChildIdentity>();
+        [DataMember]
         public string pinHash = "";
     }
     public class IDRequestInfo
@@ -19,6 +26,7 @@ namespace LIdentityProvider.Authentication
         public string ReservationKey = "";
         public string GUID = "";
     }
+
 
     public static class UserManager
     {
@@ -52,6 +60,24 @@ namespace LIdentityProvider.Authentication
             }
             return false;
         }
+        public static bool VerifyLocalUserAccount(string passwordhash, LRI UserLRI)
+        {
+            if (Identities.ContainsKey(UserLRI.LRIString))
+            {
+                if (Identities[UserLRI.LRIString].passwordHash == passwordhash)
+                    return true;
+            }
+            return false; ;
+        }
+        public static bool VerifyChildUserAccount(string ChildKey, LRI UserLRI)
+        {
+            if (Identities.ContainsKey(UserLRI.LRIString))
+            {
+                if (Identities[UserLRI.LRIString].Identity.KeyForParent == ChildKey)
+                    return true;
+            }
+            return false;
+        }
         public static void AddChildToParent(UserInfo info, string KeyFromChild, string ChildUserLRI)
         {
             ChildIdentity cident = new ChildIdentity();
@@ -77,12 +103,12 @@ namespace LIdentityProvider.Authentication
                 info.Identity.UserLRI = childParsedLRI.LRIString;
                 info.passwordHash = passwordhash;
                 info.pinHash = ChildPinHash;
-
+                info.Identity.KeyForParent = KeyFromChild;
                 Identities[info.Identity.UserLRI] = info;
                 Usernames.Add(username);
                 RequestedIDs.Remove(request.GUID);
 
-                //SaveIdentity(childParsedLRI);
+                SaveIdentity(childParsedLRI);
                 return true;
             }
             return false;
@@ -125,7 +151,7 @@ namespace LIdentityProvider.Authentication
                 Usernames.Add(username);
                 RequestedIDs.Remove(request.GUID);
 
-                //SaveIdentity(childParsedLRI);
+                SaveIdentity(childParsedLRI);
                 return true;
             }
             return false;
@@ -140,6 +166,7 @@ namespace LIdentityProvider.Authentication
         //should be overloaded, called when an ID is added to save it to a persistant location
         public static void SaveIdentity(LRI userLRI)
         {
+            CouchDBMgr.WriteDocument(userLRI.DocumentID, Identities[userLRI.LRIString]);
         }
         public static void LoadIdentities()
         {
