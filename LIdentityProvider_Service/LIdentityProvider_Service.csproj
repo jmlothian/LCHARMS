@@ -6,12 +6,12 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{CEA99EC5-00FD-4E70-9A39-05AD992FD136}</ProjectGuid>
+    <ProjectGuid>{2047372D-F1EF-4288-BB92-E399CE40E9B0}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LClientProvider</RootNamespace>
-    <AssemblyName>LClientProvider</AssemblyName>
+    <RootNamespace>LIdentityProvider_Service</RootNamespace>
+    <AssemblyName>LIdentityProvider_Service</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
@@ -34,9 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -56,7 +53,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LClientProvider.svc" />
+    <Content Include="LIdentityProvider.svc" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -66,17 +63,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LClientProvider.svc.cs">
-      <DependentUpon>LClientProvider.svc</DependentUpon>
+    <Compile Include="LIdentityProvider.svc.cs">
+      <DependentUpon>LIdentityProvider.svc</DependentUpon>
     </Compile>
-    <Compile Include="ILClientProvider.cs" />
+    <Compile Include="IService1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LCHARMS\LCHARMS.csproj">
@@ -92,7 +86,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>12489</DevelopmentServerPort>
+          <DevelopmentServerPort>31939</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

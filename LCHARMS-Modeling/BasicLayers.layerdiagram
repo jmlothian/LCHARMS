@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="70aa648e-d360-485a-9759-1c992b88b90e" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/LayerDesigner">
+  <layers>
+    <layer Id="4a8af19d-2696-4a5a-be36-2bb63d9c3a28" name="Services">
+      <dependencyToLayers>
+        <dependencyFromLayerToLayer Id="616a4e75-f035-4c0d-8cad-de4440a52fae" direction="Forward">
+          <layerMoniker Id="f7e58ba9-c179-4211-a5b4-93ac0056b8b7" />
+        </dependencyFromLayerToLayer>
+      </dependencyToLayers>
+      <childLayers>
+        <layer Id="a084b09b-54cb-4be9-8433-e5e0af22db46" name="IdentityProvider" />
+        <layer Id="7848bdb2-7ad6-4baf-8c91-f71396771859" name="DataProvider">
+          <dependencyToLayers>
+            <dependencyFromLayerToLayer Id="3b03fd3a-3dc8-4859-982a-6ad41c9cc3e9" direction="Forward">
+              <layerMoniker Id="a084b09b-54cb-4be9-8433-e5e0af22db46" />
+            </dependencyFromLayerToLayer>
+          </dependencyToLayers>
+        </layer>
+        <layer Id="caf08a8a-7e2d-467a-ae0e-5c8352646307" name="ClientProvider">
+          <dependencyToLayers>
+            <dependencyFromLayerToLayer Id="e25238ed-ab30-4e3a-8936-547cf130eeea" direction="Forward">
+              <layerMoniker Id="09d05c05-af6b-47b7-aa9b-d2e81b4e1d8e" />
+            </dependencyFromLayerToLayer>
+            <dependencyFromLayerToLayer Id="6543f551-8272-403f-b187-ff593f450e57" direction="Forward">
+              <layerMoniker Id="068073d5-1b35-4daa-a196-7784a90474a1" />
+            </dependencyFromLayerToLayer>
+          </dependencyToLayers>
+        </layer>
+        <layer Id="09d05c05-af6b-47b7-aa9b-d2e81b4e1d8e" name="Authentication">
+          <dependencyToLayers>
+            <dependencyFromLayerToLayer Id="496cd630-68ab-4d39-b956-802ea9ab373a" direction="Forward">
+              <layerMoniker Id="a084b09b-54cb-4be9-8433-e5e0af22db46" />
+            </dependencyFromLayerToLayer>
+          </dependencyToLayers>
+        </layer>
+        <layer Id="068073d5-1b35-4daa-a196-7784a90474a1" name="Authorization">
+          <dependencyToLayers>
+            <dependencyFromLayerToLayer Id="c62c83c0-19d1-4c9e-927c-6eec589e0434" direction="Forward">
+              <layerMoniker Id="7848bdb2-7ad6-4baf-8c91-f71396771859" />
+            </dependencyFromLayerToLayer>
+          </dependencyToLayers>
+        </layer>
+      </childLayers>
+    </layer>
+    <layer Id="33534f24-adfa-4bfc-92c7-bdf3637ceff6" name="Client">
+      <dependencyToLayers>
+        <dependencyFromLayerToLayer Id="a1e3719b-2eb2-4c6e-86bb-7486b571e702" direction="Forward">
+          <layerMoniker Id="caf08a8a-7e2d-467a-ae0e-5c8352646307" />
+        </dependencyFromLayerToLayer>
+      </dependencyToLayers>
+    </layer>
+    <layer Id="f7e58ba9-c179-4211-a5b4-93ac0056b8b7" name="LDocumentService">
+      <dependencyToLayers>
+        <dependencyFromLayerToLayer Id="7f9cc540-e5ec-4660-bc4b-5f00fd651df7" direction="Forward">
+          <layerMoniker Id="64bf86de-c71c-4cd3-b307-91b2212bf0df" />
+        </dependencyFromLayerToLayer>
+      </dependencyToLayers>
+    </layer>
+    <layer Id="64bf86de-c71c-4cd3-b307-91b2212bf0df" name="LDocumentManager" />
+  </layers>
+</layerModel>

@@ -31,8 +31,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,8 +49,50 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Authentication\UserManager.cs" />
+    <Compile Include="Client\IDManager.cs" />
+    <Compile Include="Client\LConnectionManager.cs" />
+    <Compile Include="Collection\LCollection.cs" />
+    <Compile Include="Collection\LCollectionMembership.cs" />
+    <Compile Include="Collection\LCollectionTag.cs" />
+    <Compile Include="Collection\LTag.cs" />
+    <Compile Include="Collection\TagToDocument.cs" />
+    <Compile Include="Config\LCHARMSConfigSection.cs" />
+    <Compile Include="DB\CouchDB\CouchDBMgr.cs" />
+    <Compile Include="Document\DocumentPartResponse.cs" />
+    <Compile Include="Document\DocumentTransferManager\LDocumentTransferManager.cs" />
+    <Compile Include="Document\DocumentTransferManager\TransferUpdate.cs" />
+    <Compile Include="Document\ILDataProvider.cs" />
+    <Compile Include="Document\ILDocumentManager.cs" />
+    <Compile Include="Document\DocumentTransferManager\ILDocumentTransferManager.cs" />
+    <Compile Include="Document\LDocCoreAccess.cs" />
+    <Compile Include="Document\LDocument.cs" />
+    <Compile Include="Document\LDocumentManager.cs" />
+    <Compile Include="Document\LDocumentService.cs" />
+    <Compile Include="LServiceHost.cs" />
+    <Compile Include="Document\ServiceResponse.cs" />
+    <Compile Include="Hierarchy\LHierarchy.cs" />
+    <Compile Include="Identity\GroupManager.cs" />
+    <Compile Include="Identity\ILIdentityProvider.cs" />
+    <Compile Include="Identity\LIdentity.cs" />
+    <Compile Include="Identity\ServiceCredentials.cs" />
+    <Compile Include="Identity\UserInGroup.cs" />
+    <Compile Include="Logging\FDebugLog.cs" />
+    <Compile Include="Logging\IDebugLog.cs" />
+    <Compile Include="Logic.cs" />
+    <Compile Include="LRI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\AuthorizationManager.cs" />
+    <Compile Include="Security\LDocumentAccessControlList.cs" />
+    <Compile Include="Session\SessionInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Message\" />
+    <Folder Include="UI\Workspace\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
