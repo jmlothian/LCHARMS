@@ -6,6 +6,7 @@ using LCHARMS.Identity;
 using LCHARMS;
 using LCHARMS.DB.CouchDB;
 using System.Runtime.Serialization;
+using LCHARMS.Document;
 
 namespace LIdentityProvider.Authentication
 {
@@ -114,19 +115,11 @@ namespace LIdentityProvider.Authentication
             return false;
         }
 
-        private static bool GUIDAvailable(string guid)
-        {
-            return !(RequestedIDs.ContainsKey(guid) | Identities.ContainsKey(guid));
-        }
         public static IDRequestInfo ReserveGUID(string reservationKey)
         {
             IDRequestInfo info = new IDRequestInfo();
             info.ReservationKey = reservationKey;
-            info.GUID = Guid.NewGuid().ToString();
-            while (!GUIDAvailable(info.GUID))
-            {
-                info.GUID = Guid.NewGuid().ToString();
-            }
+            info.GUID = LDocManager.RequestGUID();
             RequestedIDs[info.GUID] = info;
             return info;
         }
@@ -166,7 +159,28 @@ namespace LIdentityProvider.Authentication
         //should be overloaded, called when an ID is added to save it to a persistant location
         public static void SaveIdentity(LRI userLRI)
         {
-            CouchDBMgr.WriteDocument(userLRI.DocumentID, Identities[userLRI.LRIString]);
+            LDocumentHeader header = LDocManager.GetDocHeader(userLRI);
+            if (header == null)
+            {
+                //create it
+                header = new LDocumentHeader();
+                header.DocumentLRI = userLRI.LRIString;
+                header.FQDT = "lcharms.user";
+                header.DocumentID = userLRI.DocumentID;
+                header.DocType = DocumentType.DOC_HEADER;
+                List<LDocumentPart> parts = new List<LDocumentPart>();
+                LDocumentPart idPart = new LDocumentPart();
+                idPart.DocumentID = userLRI.DocumentID;
+                idPart.SequenceNumber = 0;
+                idPart.DocType = DocumentType.DOC_PART;
+                parts.Add(idPart);
+                LDocManager.CreateDoc(userLRI, header, parts);
+            }
+            else
+            {
+
+            }
+            //CouchDBMgr.WriteDocument(userLRI.DocumentID, Identities[userLRI.LRIString]);
         }
         public static void LoadIdentities()
         {

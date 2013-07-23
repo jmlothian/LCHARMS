@@ -10,7 +10,7 @@ namespace LCHARMS.Security
 {
     [DataContract]
     [FlagsAttribute]
-    public enum LDocACLPermission
+    public enum LDocACLPermission //todo, GRANT should be grant-read, grant-write.  Right now, it will imply WRITE access
     {
         NONE = 0,
         READ = 1,
@@ -19,10 +19,11 @@ namespace LCHARMS.Security
         GRANT = 8,
         ACCESS_PREV_VERSION = 16,
         ACCESS_NEXT_VERSION = 32,
-        DENY = 64 // deny overrides any other permission, so you can exclude people who might be in an allowed group
+        DENY = 64, // deny overrides any other permission, so you can exclude people who might be in an allowed group
+        OWNER = 128 //unused... still not sure what to do here
     }
     [DataContract]
-    public class LDocumentAccessControlList
+    public class LDocumentAccessControlEntry
     {
         [DataMember]
         public string DocumentID = "";
@@ -31,15 +32,15 @@ namespace LCHARMS.Security
         [DataMember]
         public LDocumentVersionInfo CurrentVersionInfo = new LDocumentVersionInfo();
         [DataMember]
-        LDocACLPermission Permissions = LDocACLPermission.READ | LDocACLPermission.ACCESS_NEXT_VERSION;
+        public LDocACLPermission Permissions = LDocACLPermission.READ | LDocACLPermission.ACCESS_NEXT_VERSION;
     }
 
     //document providers should provide role-based mappings of role to multiple ACLs
     [DataContract]
-    public class LDocACLMap
+    public class LDocACEMap
     {
         [DataMember]
-        public LDocumentAccessControlList ACL = new LDocumentAccessControlList();
+        public LDocumentAccessControlEntry ACE = new LDocumentAccessControlEntry();
         [DataMember]
         public LIdentity Identity = new LIdentity();
         [DataMember]

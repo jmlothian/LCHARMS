@@ -20,7 +20,8 @@ namespace LCHARMS
         LRI_ID = 3
     };
     [DataContract]
-    public class LRI
+    
+    public class LRI : IComparable, IEquatable<LRI>
     {
         [DataMember]
         public string URI = "";
@@ -30,6 +31,10 @@ namespace LCHARMS
         public string LRIDomain = "";
         [DataMember]
         public string URIDomain = "";
+        [DataMember]
+        public string BaseLRI = ""; //domain plus root directories until ~ directory
+        [DataMember]
+        public string BaseURI = ""; //domain plus root directories until ~ directory
         [DataMember]
         public int Port = 80;
         [DataMember]
@@ -47,90 +52,119 @@ namespace LCHARMS
         [DataMember]
         public bool SystemDatabase = false;
 
+        public override string ToString()
+        {
+            return LRIString;
+        }
+        public bool Equals(LRI lri)
+        {
+            return LRIString == lri.LRIString;                
+        }
+        public override int GetHashCode()
+        {
+            return LRIString.GetHashCode();
+        }
+        public int CompareTo(object obj)
+        {
+            if (obj is string)
+            {
+                return LRIString.CompareTo((string)obj);
+            }
+            else
+            {
+                return LRIString.CompareTo(((LRI)obj).LRIString);
+            }
+        }
         public LRI(string lri, bool IsURI = false)
         {
-            string[] parts = lri.Split('/');
-            if (parts[0].Contains(':'))
+            if (lri == "")
             {
-                Port = int.Parse(parts[0].Split(':')[1]);
-                parts[0] = parts[0].Split(':')[0];
-            }
-            if (IsURI)
-            {
-                //parse uri
-                //no prefix
-                // technically /database/../ is optional
-                //  www.something.tld/database/database/id#version
-
-
-                URIDomain = parts[0];
-                URI = lri;
-                //reverse domain
-                LRIDomain = string.Join(".", URIDomain.Split('.').Reverse());
-
-
+                ValidLRI = true; // this is the "public" user LRI
             }
             else
             {
-                //parse lri
-                LRIDomain = parts[0];
-                URIDomain = string.Join(".", LRIDomain.Split('.').Reverse());
-            }
-
-
-            if (parts.Length == 1)
-            {
-                LRI_Type = LRI_TYPE.LRI_DOMAIN;
-            }
-            else
-            {
-
-                if (lri[lri.Length - 1] == '/')
+                string[] parts = lri.Split('/');
+                if (parts[0].Contains(':'))
                 {
-                    LRI_Type = LRI_TYPE.LRI_DB;
-                    ParseDB(parts);
+                    Port = int.Parse(parts[0].Split(':')[1]);
+                    parts[0] = parts[0].Split(':')[0];
+                }
+                if (IsURI)
+                {
+                    //parse uri
+                    //no prefix
+                    // technically /database/../ is optional
+                    //  www.something.tld/database/database/id#version
+
+
+                    URIDomain = parts[0];
+                    URI = lri;
+                    //reverse domain
+                    LRIDomain = string.Join(".", URIDomain.Split('.').Reverse());
+
+
                 }
                 else
                 {
-                    LRI_Type = LRI_TYPE.LRI_ID;
-                    ParseDB(parts, true);
-                    ParseID(parts);
+                    //parse lri
+                    LRIDomain = parts[0];
+                    URIDomain = string.Join(".", LRIDomain.Split('.').Reverse());
                 }
-            }
-            if (IsURI)
-            {
-                URI = lri;
-                if (Port != 80)
-                {
-                    LRIString = LRIDomain + ":" + Port.ToString() + "/" + Database + "/" + DocumentID;
-                }
-                else
-                {
-                    LRIString = LRIDomain + "/" + Database + "/" + DocumentID;
-                }
-                if (!Version.Latest)
-                {
-                    LRIString += "#" + Version.Version.ToString();
-                }
-            }
-            else
-            {
-                LRIString = lri;
-                if (Port != 80)
-                {
-                    URI = URIDomain + ":" + Port.ToString() + "/" + Database + "/" + DocumentID;
-                }
-                else
-                {
-                    URI = URIDomain + "/" + Database + "/" + DocumentID;
-                }
-                if (!Version.Latest)
-                {
-                    URI += "#" + Version.Version.ToString();
-                }
-            }
-            ValidLRI = true;
 
+
+                if (parts.Length == 1)
+                {
+                    LRI_Type = LRI_TYPE.LRI_DOMAIN;
+                }
+                else
+                {
+
+                    if (lri[lri.Length - 1] == '/')
+                    {
+                        LRI_Type = LRI_TYPE.LRI_DB;
+                        ParseDB(parts);
+                    }
+                    else
+                    {
+                        LRI_Type = LRI_TYPE.LRI_ID;
+                        ParseDB(parts, false);
+                        //ParseID(parts);
+                    }
+                }
+                if (IsURI)
+                {
+                    URI = lri;
+                    if (Port != 80)
+                    {
+                        LRIString = LRIDomain + ":" + Port.ToString() + "/" + Database + "/" + DocumentID;
+                    }
+                    else
+                    {
+                        LRIString = LRIDomain + "/" + Database + "/" + DocumentID;
+                    }
+                    if (!Version.Latest)
+                    {
+                        LRIString += "#" + Version.Version.ToString();
+                    }
+                }
+                else
+                {
+                    LRIString = lri;
+                    if (Port != 80)
+                    {
+                        URI = URIDomain + ":" + Port.ToString() + "/" + Database + "/" + DocumentID;
+                    }
+                    else
+                    {
+                        URI = URIDomain + "/" + Database + "/" + DocumentID;
+                    }
+                    if (!Version.Latest)
+                    {
+                        URI += "#" + Version.Version.ToString();
+                    }
+                }
+                ValidLRI = true;
+            }
         }
 
         private void ParseID(string[] parts)
@@ -152,14 +186,51 @@ namespace LCHARMS
         private void ParseDB(string[] parts, bool LastIsID=false)
         {
             int len = LastIsID == true ? parts.Length - 1 : parts.Length;
+            bool FoundRootDB = false;
+            BaseLRI = LRIDomain;
+            BaseURI = URIDomain;
+            if (Port != 80)
+            {
+                BaseLRI += ":" + Port.ToString();
+                BaseURI += ":" + Port.ToString();
+            }
             for (int i = 1; i < len; i++)
             {
-                if (i == 1 && parts[i].Length > 0 && parts[i][0] == '~')
+                if (parts[i].Length > 0 && parts[i][0] == '~')
+                {
                     SystemDatabase = true;
-                Database += parts[i] + "/";
-                Databases.Add(parts[i]);
+                    FoundRootDB = true;
+                }
+                if (FoundRootDB)
+                {
+                    Database += parts[i] + "/";
+                    Databases.Add(parts[i]);
+                    if (parts[i] == "~users")
+                    {
+                        ParseID(parts); //parse rest of string
+                        break; //we're done here.
+                    }
+                }
+                else
+                {
+                    if (i == len - 1)
+                    {
+                        //last item, not a /, must be an ID
+                        ParseID(parts); //parse rest of string
+                        break; //we're done here.
+                    }
+                    else
+                    {
+                        BaseLRI += "/" + parts[i];
+                        BaseURI += "/" + parts[i];
+                    }
+                }
             }
-            Database = Database.Substring(0, Database.Length - 1);
+            if (Database.Length > 0)
+            {
+                Database = Database.Substring(0, Database.Length - 1);
+            }
         }
+
     }
 }

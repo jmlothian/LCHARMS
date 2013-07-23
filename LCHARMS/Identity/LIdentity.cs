@@ -8,15 +8,23 @@ namespace LCHARMS.Identity
 {
     [DataContract]
     [FlagsAttribute]
+    [Serializable]
     public enum LIdentityType
     {
+        [EnumMember]
         NONE = 0,
+        [EnumMember]
         USER = 1,
+        [EnumMember]
         GROUP = 2,
-        PROVIDER_MANAGED = 4 //the doc provider manages this group, otherwise the group is specific to a user, always set for users (for now)
+        [EnumMember]
+        PROVIDER_MANAGED = 4, //the doc provider manages this group, otherwise the group is specific to a user, always set for users (for now)
+        [EnumMember]
+        PUBLIC = 8 //special user type to indicate publically available docs or information, used primarily by ACLs
     }
 
     [DataContract]
+    [Serializable]
     public class ChildIdentity
     {
         [DataMember]
@@ -30,7 +38,8 @@ namespace LCHARMS.Identity
     }
 
     [DataContract]
-    public class LIdentity
+    [Serializable]
+    public class LIdentity : IComparable, IEquatable<LIdentity>
     {
         [DataMember]
         public string Username = "";
@@ -43,7 +52,7 @@ namespace LCHARMS.Identity
         [DataMember]
         public string ParentUserID = "";
         [DataMember]
-        public string ParentDomainLRI = "";
+        public string ParentBaseLRI = "";
         //hash of this userid and parent userid
         [DataMember]
         public string UserHash = "";
@@ -57,16 +66,30 @@ namespace LCHARMS.Identity
         [DataMember]
         public string KeyForParent = "";
 
+        //for all intents and purposes, if the LRIs match, the represent the same user
+        public int CompareTo(object obj)
+        {
+            if (obj is string)
+            {
+                return UserLRI.CompareTo((string)obj);
+            }
+            else
+            {
+                return UserLRI.CompareTo(((LIdentity)obj).UserLRI);
+            }
+        }
+        public bool Equals(LIdentity ident)
+        {
+            return UserLRI == ident.UserLRI;
+        }
+        public override int GetHashCode()
+        {
+            return UserLRI.GetHashCode();
+        }
+
     }
 
-    [DataContract]
-    public class UserInGroup
-    {
-        [DataMember]
-        public LIdentity Group = new LIdentity();
-        [DataMember]
-        public LIdentity User = new LIdentity();
-    }
+
 
     //core identity, used only on the lcharms core ID server
     [DataContract]
@@ -81,4 +104,6 @@ namespace LCHARMS.Identity
         [DataMember]
         public string PrimaryEmailAddress = "";
     }
+
+
 }

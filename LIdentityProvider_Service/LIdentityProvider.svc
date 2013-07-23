@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="LIdentityProvider_Service.LIdentityProvider" CodeBehind="LIdentityProvider.svc.cs" %>

@@ -77,10 +77,6 @@
       <Project>{2E48181E-70A2-4459-98DE-01FF1C343CE0}</Project>
       <Name>LCHARMS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LIdentityProvider\LIdentityProvider.csproj">
-      <Project>{3CC4E947-AC20-408B-8859-7999C8B31C07}</Project>
-      <Name>LIdentityProvider</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
