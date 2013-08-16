@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace LCHARMS.Document
 {
@@ -21,7 +22,11 @@ namespace LCHARMS.Document
         [EnumMember]
         DOC_ACL = 5,
         [EnumMember]
-        LRT=6
+        LRT=6,
+        [EnumMember]
+        WORKSPACE=7,
+        [EnumMember]
+        CLIENTACCOUNT=8    
     };  //some headers are index only, in the case of deleted files
 
     [DataContract]
@@ -212,7 +217,31 @@ namespace LCHARMS.Document
     {
         public string id = "";      //the document part ID
         public string key = "";     //the document ID
-        public T value;             //whatever we're looking for
+        public LDocumentPart value;
+        [NonSerialized]
+        private T _decodedValue;             //whatever we're looking for
+        [NonSerialized]
+        public bool decoded = false;
+        public T decodedValue
+        {
+            get
+            {
+                if (decoded && _decodedValue != null)
+                {
+                    return _decodedValue;
+                }
+                else
+                {
+                    decoded = true;
+                    _decodedValue = JsonConvert.DeserializeObject<T>(System.Text.Encoding.UTF8.GetString(value.Data));
+                    return _decodedValue;
+                }
+            }
+            set
+            {
+                _decodedValue = value;
+            }
+        }
     }
     public class LDBList<T>
     {

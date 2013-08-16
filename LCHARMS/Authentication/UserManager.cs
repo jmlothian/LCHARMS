@@ -36,6 +36,8 @@ namespace LCHARMS.Authentication
     {
         //all known Identities to this service
         public static Dictionary<string, UserInfo> Identities = new Dictionary<string, UserInfo>();
+        public static Dictionary<string, UserInfo> IdentitiesByUsername = new Dictionary<string, UserInfo>();
+
         public static Dictionary<string, IDRequestInfo> RequestedIDs = new Dictionary<string, IDRequestInfo>();
         public static List<string> Usernames = new List<string>();
         public static string DomainLRI = LCHARMSConfig.GetSection().LRI;
@@ -43,7 +45,26 @@ namespace LCHARMS.Authentication
         //username, hash
         public static Dictionary<string, UserInfo> SecurityPINHashes = new Dictionary<string, UserInfo>();
 
-
+        //only valid for users whose LRI match the current service
+        public static LRI GetLRIForUsername(string username, string passwordHash)
+        {
+            LRI lri = null;
+            if (IdentitiesByUsername.ContainsKey(username) && IdentitiesByUsername[username].passwordHash == passwordHash)
+            {
+                lri = new LRI(IdentitiesByUsername[username].Identity.UserLRI);
+            }
+            return lri;
+        }
+        //todo: implement clone for ident to force a copy of this info instead of reference (security considerations)
+        public static LIdentity GetLIdentityForUsername(string username, string passwordHash)
+        {
+            LIdentity lid = null;
+            if (IdentitiesByUsername.ContainsKey(username) && IdentitiesByUsername[username].passwordHash == passwordHash)
+            {
+                lid = IdentitiesByUsername[username].Identity;
+            }
+            return lid;
+        }
         //determine if this user exists here, and the pin is valid
         //todo: fix username request race condition
         public static bool VerifyUserAccount(string UserPinHash, LRI UserLRI)
@@ -151,6 +172,7 @@ namespace LCHARMS.Authentication
                 info.pinHash = ChildPinHash;
 
                 Identities[info.Identity.UserLRI] = info;
+                IdentitiesByUsername[username] = info;
                 Usernames.Add(username);
                 RequestedIDs.Remove(request.GUID);
 
@@ -211,6 +233,10 @@ namespace LCHARMS.Authentication
                     UserInfo id = JsonConvert.DeserializeObject<UserInfo>(System.Text.Encoding.UTF8.GetString(lst.rows[0].value.Data));
                     FDebugLog.WriteLog("Loaded: " + id.Identity.UserLRI + "...(" + id.Identity.Username + ")");
                     Identities[id.Identity.UserLRI] = id;
+                    if (id.Identity.DomainLRI == LCHARMSConfig.GetSection().LRI)
+                    {
+                        IdentitiesByUsername[id.Identity.Username] = id;
+                    }
                     Usernames.Add(id.Identity.Username);
                     SecurityPINHashes[id.Identity.Username] = id;
 

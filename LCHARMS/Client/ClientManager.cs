@@ -1,24 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.ServiceModel.Web;
 using System.Text;
+using LCHARMS.UI.Workspace;
 using LCHARMS.Document;
-using LCHARMS.LIdentityProvider;
-using LCHARMS;
+using LCHARMS.Authentication;
+using System.ServiceModel;
 using LCHARMS.Identity;
+using LCHARMS.Hierarchy;
 using LCHARMS.Session;
 using LCHARMS.Collection;
-using LCHARMS.Hierarchy;
-using LCHARMS.Client;
 
-namespace LClientProvider
+namespace LCHARMS.Client
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Service1" in code, svc and config file together.
-    public class LClientProvider : ILClientProvider
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+    public class ClientManager : IClientService
     {
+        public LConnectionManager ConnMgr = new LConnectionManager();
+        public LDocumentManager DocManager = new LDocumentManager();
+        public ClientAccountManager ClientAcctManager;
+        public IDManager IDMgr;
+        public WorkspaceManager WorkspaceMgr;
+        public ClientManager()
+        {
+            //wire them up in sequence
+            IDMgr = new IDManager(ConnMgr);
+            ClientAcctManager = new ClientAccountManager(IDMgr, DocManager);
+            WorkspaceMgr = new WorkspaceManager(ClientAcctManager);
+        }
+        public void AddIdentityToAccount(string ID, UserInfo IdentityToAdd, LRI UserLRI = null)
+        {
+            ClientAcctManager.AddIdentityToAccount(ID, IdentityToAdd, UserLRI);
+        }
+        public ServiceResponse<string> LoginID(LRI userLRI, string passwordHash, bool LoginAll = true)
+        {
+            return ClientAcctManager.LoginID(userLRI, passwordHash, LoginAll);
+        }
+        public ServiceResponse<string> RegisterNewAccount(string ServiceLRI, string DomainLRI, string Username, string passwordHash)
+        {
+            return ClientAcctManager.RegisterNewAccount(ServiceLRI, DomainLRI, Username, passwordHash);
+        }
+
 
         public string IdentityProvider
         {
@@ -43,6 +65,8 @@ namespace LClientProvider
                 throw new NotImplementedException();
             }
         }
+
+
 
         public ServiceResponse<LDocumentHeader> GetDocHeader(ServiceCredentials Credentials, LRI lri)
         {
@@ -209,12 +233,10 @@ namespace LClientProvider
             throw new NotImplementedException();
         }
 
-
         public LRI GetUserLRI(string ServiceLRI, string Username, string passwordHash)
         {
             throw new NotImplementedException();
         }
-
 
         public LIdentity GetUserIdentity(string ServiceLRI, string Username, string passwordHash)
         {

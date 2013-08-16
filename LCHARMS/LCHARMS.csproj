@@ -50,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authentication\UserManager.cs" />
+    <Compile Include="Client\ClientAccount.cs" />
+    <Compile Include="Client\ClientAccountManager.cs" />
+    <Compile Include="Client\ClientManager.cs" />
     <Compile Include="Client\IDManager.cs" />
     <Compile Include="Client\LConnectionManager.cs" />
     <Compile Include="Collection\LCollection.cs" />
@@ -58,6 +61,7 @@
     <Compile Include="Collection\LTag.cs" />
     <Compile Include="Collection\TagToDocument.cs" />
     <Compile Include="Config\LCHARMSConfigSection.cs" />
+    <Compile Include="Controls\UINotification.cs" />
     <Compile Include="DB\CouchDB\CouchDBMgr.cs" />
     <Compile Include="Document\DocumentPartResponse.cs" />
     <Compile Include="Document\DocumentTransferManager\LDocumentTransferManager.cs" />
@@ -85,10 +89,14 @@
     <Compile Include="Security\AuthorizationManager.cs" />
     <Compile Include="Security\LDocumentAccessControlList.cs" />
     <Compile Include="Session\SessionInfo.cs" />
+    <Compile Include="UI\Workspace\LUICollection.cs" />
+    <Compile Include="UI\Workspace\LUIDocument.cs" />
+    <Compile Include="UI\Workspace\LUIHierarchy.cs" />
+    <Compile Include="UI\Workspace\LWorkspace.cs" />
+    <Compile Include="UI\Workspace\WorkspaceManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Message\" />
-    <Folder Include="UI\Workspace\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />

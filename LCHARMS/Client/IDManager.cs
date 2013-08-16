@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using LCHARMS.Session;
 using System.Security.Cryptography;
+using LCHARMS.Identity;
 
 namespace LCHARMS.Client
 {
@@ -106,6 +107,14 @@ namespace LCHARMS.Client
                 } 
             }
             return false;
+        }
+        public LRI GetUserLRI(LRI ServiceLRI, string DomainLRI, string Username, string PasswordHash)
+        {
+            return ConnectionManager.GetIDConnection(ServiceLRI).GetUserLRI(ServiceLRI.URI.Replace("//","/"), Username, PasswordHash);
+        }
+        public LIdentity GetUserLIdentity(LRI ServiceLRI, string DomainLRI, string Username, string PasswordHash)
+        {
+            return ConnectionManager.GetIDConnection(ServiceLRI).GetUserIdentity(ServiceLRI.URI.Replace("//", "/"), Username, PasswordHash);
         }
     }
 }

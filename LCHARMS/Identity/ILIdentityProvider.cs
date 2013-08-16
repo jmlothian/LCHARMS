@@ -7,6 +7,7 @@ using System.ServiceModel.Web;
 using System.Text;
 using LCHARMS;
 using LCHARMS.Session;
+using LCHARMS.Identity;
 
 namespace LCHARMS.LIdentityProvider
 {
@@ -50,7 +51,12 @@ namespace LCHARMS.LIdentityProvider
 
         [OperationContract]
         LRI ParseLRI(string lri, bool IsURI = false);
-    
+
+        [OperationContract]
+        LRI GetUserLRI(string ServiceLRI, string Username, string passwordHash);
+
+        [OperationContract]
+        LIdentity GetUserIdentity(string ServiceLRI, string Username, string passwordHash);
     }
 
 }

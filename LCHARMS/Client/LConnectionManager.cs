@@ -90,7 +90,7 @@ namespace LCHARMS.Client
                 try
                 {
                     LConnectionInfo info = new LConnectionInfo();
-                    info.EndpointAddr = new EndpointAddress(new Uri("http://" + lri.BaseURI),
+                    info.EndpointAddr = new EndpointAddress(new Uri("http://" + lri.URI.Replace("//","/")),
                             EndpointIdentity.CreateDnsIdentity(lri.URIDomain));
                     info.ChannelBinding = new BasicHttpBinding();
                     var myChannelFactory = new ChannelFactory<ILIdentityProvider>(info.ChannelBinding, info.EndpointAddr);

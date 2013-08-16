@@ -10,6 +10,7 @@ using LCHARMS.Document;
 using LCHARMS.Identity;
 using LCHARMS.Logging;
 using LCHARMS.Security;
+using System.Security.Cryptography;
 
 namespace LTestApp
 {
@@ -101,6 +102,37 @@ namespace LTestApp
             docMan.RemoveTag(id, new LRI(head.DocumentLRI), "Rock");
             head.FileName = "changed filename";
             docMan.SaveDocument(new LRI(head.DocumentLRI),head, new List<LDocumentPart>());
+        }
+
+        private void btnTestClient_Click(object sender, EventArgs e)
+        {
+            ClientManager Client = new ClientManager();
+            Console.WriteLine(Client.ConnMgr.GetIDConnection(new LRI("localhost:31939/LIdentityProvider.svc")).Ping());
+            bool FirstUser = Client.IDMgr.CreateCoreID("rhalin", new LRI("localhost:31939/LIdentityProvider.svc"), "password", "pin");
+            if (FirstUser)
+            {
+                IDInfo parentInfo = Client.IDMgr.Sessions.Last().Value;
+                
+                LIdentity id = AuthorizationManager.GetAuthIdentityFromLRI(parentInfo.LRI/*"net.sytes.rhalin/~users/00000000001"*/);
+                id.Username = "rhalin";
+                SHA1 hasher = SHA1.Create();
+
+                Client.ClientAcctManager.RegisterNewAccount(
+                    "localhost:31939/LIdentityProvider.svc", id.DomainLRI,
+                    id.Username,
+                    BitConverter.ToString(hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes("password"))).Replace("-", string.Empty)
+                );
+            }
+        }
+
+        private void btnPurgeDB_Click(object sender, EventArgs e)
+        {
+            LDocumentManager.PurgeAllFiles();
+        }
+
+        private void btnLoadAndStop_Click(object sender, EventArgs e)
+        {
+            ClientManager Client = new ClientManager();
         }
     }
 }

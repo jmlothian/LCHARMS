@@ -12,6 +12,7 @@ using LCHARMS.DB.CouchDB;
 using LCHARMS.Security;
 using Newtonsoft.Json;
 using LCHARMS.Identity;
+using LCHARMS.Logging;
 
 namespace LCHARMS.Document
 {
@@ -69,7 +70,18 @@ namespace LCHARMS.Document
         private SortedDictionary<LRI, LHierarchy> IndexedHierarchies = new SortedDictionary<LRI, LHierarchy>();
 
         JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
-        private AuthorizationManager AuthManager;
+        public AuthorizationManager AuthManager 
+        { 
+            get 
+            { 
+                return _AuthManager; 
+            }
+            private set
+            {
+                _AuthManager = value;
+            }
+        }
+        private AuthorizationManager _AuthManager;
 
         public bool CheckPermission(LIdentity ID, LRI documentLRI, LDocACLPermission permission)
         {
@@ -80,15 +92,38 @@ namespace LCHARMS.Document
         {
             return !DocIndex.ContainsKey(guid);
         }
+        //this should NOT go into the final product.
+        public static void PurgeAllFiles()
+        {
+            if (DocIndex.Count == 0)
+            {
+                LoadIndex();
+            }
+            lock (DocIndex)
+            {
+                foreach (KeyValuePair<string, LDocHeaderListRow> head in DocIndex)
+                {
+                    //keep users around...
+                    if (!head.Value.id.Contains("~users"))
+                    {
+                        CouchDBMgr.DeleteFile(head.Value.id);
+                    }
+                    //CouchDBMgr.DeleteFile(head.Value.DocumentID);
+                }
+            }
+        }
         public static void LoadIndex()
         {
-            DocIndex.Clear();
-            LDocHeaderList hList = CouchDBMgr.GetAllDocIDs();
-            for (int i = 0; i < hList.rows.Count; i++)
+            lock (DocIndex)
             {
-                if(!hList.rows[i].id.Contains("_design"))
+                DocIndex.Clear();
+                LDocHeaderList hList = CouchDBMgr.GetAllDocIDs();
+                for (int i = 0; i < hList.rows.Count; i++)
                 {
-                    DocIndex[hList.rows[i].id] = (hList.rows[i]);
+                    if (!hList.rows[i].id.Contains("_design"))
+                    {
+                        DocIndex[hList.rows[i].id] = (hList.rows[i]);
+                    }
                 }
             }
         }
@@ -100,9 +135,26 @@ namespace LCHARMS.Document
                 if (!hList.rows[i].id.Contains("_design"))
                 {
                     LDocumentHeader head = CouchDBMgr.ReadDocumentHeader(hList.rows[i].id);
-                    IndexedHeaders[head.DocumentLRI] = head;
+                    if (head.DocumentLRI != "")
+                    {
+                        IndexedHeaders[head.DocumentLRI] = head;
+                    }
+                    else
+                    {
+                        FDebugLog.WriteLog("Error: LRI not included in doc: " + head.DocumentID + "-" + head.DocType.ToString());
+                        //todo: remove this bandaid
+                        if (head.DocType == DocumentType.COLLECTION)
+                        {
+                            head.DocumentLRI = (new LRI(LCHARMSConfig.GetSection().LRI + "/" + head.DocumentID).ToString());
+                            IndexedHeaders[head.DocumentLRI] = head;
+                        }
+                    }
                 }
             }
+        }
+        public byte[] SerializeToJSONByteArray<T>(T Data)
+        {
+            return System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Data, jsonSerializerSettings));
         }
         private void LoadCollections()
         {
@@ -110,8 +162,16 @@ namespace LCHARMS.Document
             foreach (LDBListRow<LCollection> col in collections.rows)
             {
                 //get header
-                LCollection coll = col.value;
-                coll.CollectionHeader = IndexedHeaders[col.id];
+                LCollection coll = col.decodedValue;
+                if (col.key.Contains("/"))
+                {
+                    coll.CollectionHeader = IndexedHeaders[col.key];
+                }
+                else
+                {
+                    string localID = LCHARMSConfig.GetSection().LRI + "/" + col.key;
+                    coll.CollectionHeader = IndexedHeaders[localID];
+                }
                 IndexedCollection[col.id] = coll;
                 string tag = coll.CollectionTags.Tag.Tag;
                 List<string> owners = AuthManager.GetOwnersForDocument(new LRI(coll.CollectionHeader.DocumentLRI));

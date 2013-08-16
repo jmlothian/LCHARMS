@@ -15,13 +15,16 @@ namespace LCHARMS.Logging
         private static StreamWriter FileWriter = null;
         public static void WriteLog(string data)
         {
-            if(FileWriter == null)
+            lock (FileName)
             {
-                CreateFileWriter();
+                if (FileWriter == null)
+                {
+                    CreateFileWriter();
+                }
+                FileWriter.WriteLine(DateTime.Now.ToString() + ": " + data);
+                FileWriter.Close();
+                FileWriter = null;
             }
-            FileWriter.WriteLine(DateTime.Now.ToString() + ": " + data);
-            FileWriter.Close();
-            FileWriter = null;
         }
         private static void CreateFileWriter()
         {

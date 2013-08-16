@@ -11,6 +11,7 @@ using LCHARMS.Identity;
 using LCHARMS.Config;
 using LCHARMS.Collection;
 using LCHARMS.Hierarchy;
+using LCHARMS.Client;
 
 namespace LCHARMS.DB.CouchDB
 {
@@ -93,6 +94,15 @@ namespace LCHARMS.DB.CouchDB
                 WriteString(Parts[i]._id, JsonConvert.SerializeObject(Parts[i],set));
             }
             //return WriteString(DocHeader.DocumentID, JsonConvert.SerializeObject(data));
+        }
+        public static string DeleteFile(string id)
+        {
+            LDocPartIDList lst = CouchDBMgr.GetLastDocRev(id);
+            if (lst.rows.Count > 0)
+            {
+                return Request(id + "?rev=" + lst.rows[0].value, "DELETE");
+            }
+            return "ERROR - file has no revision data!";
         }
         public static string WriteString(string id, string data)
         {
@@ -245,6 +255,19 @@ namespace LCHARMS.DB.CouchDB
             string results = Request("_design/~LDOCUMENTHEADER/_view/Hierarchies", "GET");
             if (results != "")
                 return JsonConvert.DeserializeObject<LDBList<LHierarchy>>(results);
+            else return null;
+        }
+
+        /// <summary>
+        /// returns all ClientAccounts
+        /// /// </summary>
+        /// <param name="PartID"></param>
+        /// <returns></returns>
+        public static LDBList<ClientAccount> GetClientAccounts()
+        {
+            string results = Request("_design/~LDOCUMENTHEADER/_view/ClientAccounts", "GET");
+            if (results != "")
+                return JsonConvert.DeserializeObject<LDBList<ClientAccount>>(results);
             else return null;
         }
     }

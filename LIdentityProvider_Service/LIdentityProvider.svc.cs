@@ -13,6 +13,7 @@ using LCHARMS.LIdentityProvider;
 using LCHARMS.Logging;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using LCHARMS.Config;
 
 namespace LIdentityProvider_Service
 {
@@ -338,6 +339,76 @@ namespace LIdentityProvider_Service
 
         #endregion
 
+
+
+        public LRI GetUserLRI(string ServiceLRI, string Username, string passwordHash)
+        {
+            if (LCHARMSConfig.GetSection().LRI == ServiceLRI)
+            {
+                return UserManager.GetLRIForUsername(Username, passwordHash);
+            }
+            else
+            {
+                //sigh, remote to it
+                LRI FromLRI = new LRI(ServiceLRI);
+                var myBinding = new BasicHttpBinding();
+                var myEndpoint = new EndpointAddress("http://" + FromLRI.BaseURI);
+                var myChannelFactory = new ChannelFactory<ILIdentityProvider>(myBinding, myEndpoint);
+                FDebugLog.WriteLog("Requesting LRI for User From:" + FromLRI.LRIString);
+                ILIdentityProvider client = null;
+                LRI retLRI = null;
+                try
+                {
+                    client = myChannelFactory.CreateChannel();
+                    retLRI = client.GetUserLRI(ServiceLRI, Username, passwordHash);
+                    ((ICommunicationObject)client).Close();
+                }
+                catch (Exception ex)
+                {
+                    FDebugLog.WriteLog("Error: " + ex.Message + " " + ex.StackTrace);
+                    if (client != null)
+                    {
+                        ((ICommunicationObject)client).Abort();
+                    }
+                }
+                return retLRI;
+            }
+        }
+
+
+        public LIdentity GetUserIdentity(string ServiceLRI, string Username, string passwordHash)
+        {
+            if (LCHARMSConfig.GetSection().LRI == ServiceLRI)
+            {
+                return UserManager.GetLIdentityForUsername(Username, passwordHash);
+            }
+            else
+            {
+                //sigh, remote to it
+                LRI FromLRI = new LRI(ServiceLRI);
+                var myBinding = new BasicHttpBinding();
+                var myEndpoint = new EndpointAddress("http://" + FromLRI.BaseURI);
+                var myChannelFactory = new ChannelFactory<ILIdentityProvider>(myBinding, myEndpoint);
+                FDebugLog.WriteLog("Requesting LRI for User From:" + FromLRI.LRIString);
+                ILIdentityProvider client = null;
+                LIdentity retLIdent = null;
+                try
+                {
+                    client = myChannelFactory.CreateChannel();
+                    retLIdent = client.GetUserIdentity(ServiceLRI, Username, passwordHash);
+                    ((ICommunicationObject)client).Close();
+                }
+                catch (Exception ex)
+                {
+                    FDebugLog.WriteLog("Error: " + ex.Message + " " + ex.StackTrace);
+                    if (client != null)
+                    {
+                        ((ICommunicationObject)client).Abort();
+                    }
+                }
+                return retLIdent;
+            }
+        }
     }
 }
 
