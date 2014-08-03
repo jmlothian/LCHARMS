@@ -2,14 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
+using LCHARMS.Hierarchy;
+using LCHARMS.Collection;
 
 namespace LCHARMS.Document
 {
+    [KnownType(typeof(LDocumentHeader))]
+    [KnownType(typeof(LHierarchyNode))]
+    [KnownType(typeof(List<LHierarchyNode>))]
+    [KnownType(typeof(List<string>))]
+    [KnownType(typeof(LHierarchy))]
+    [KnownType(typeof(LCollection))]
+    [KnownType(typeof(List<LCollection>))]
+    [KnownType(typeof(List<LDocumentVersionInfo>))]
+    [KnownType(typeof(LDocumentVersionInfo))]
+    [KnownType(typeof(DocumentPartResponse))]
+    [DataContract]
     public class ServiceResponse<T>
     {
+        [DataMember]
         public T ResponseObject;
+        [DataMember]
         public bool Error = false;
+        [DataMember]
         public string Message = "";
+        [DataMember]
         public int ErrorCode = -1;
         public ServiceResponse(T obj)
         {

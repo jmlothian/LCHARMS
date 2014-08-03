@@ -332,7 +332,8 @@ namespace LCHARMS.Document
                 //not local?
                 //setup transfer
             }
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return new DocumentPartResponse();
         }
 
         public DocumentPartResponse GetDocParts(LRI lri, int Version)

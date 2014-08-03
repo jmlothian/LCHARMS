@@ -15,6 +15,11 @@ namespace LCHARMS.Identity
         public string UserLRIString = "";
         [DataMember]
         public string SessionKey = "";
+        [DataMember]
+        public LRI ClientAccountLRI;
+        [DataMember]
+        public string ClientSessionKey = "";
+
         public ServiceCredentials(string lristr, string session)
         {
             UserLRIString = lristr;

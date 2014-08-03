@@ -28,6 +28,10 @@ namespace LCHARMS
         [DataMember]
         public string LRIString = "";
         [DataMember]
+        public string ServiceLRI = "";
+        [DataMember]
+        public string ServiceURI = "";
+        [DataMember]
         public string LRIDomain = "";
         [DataMember]
         public string URIDomain = "";
@@ -137,10 +141,15 @@ namespace LCHARMS
                     if (Port != 80)
                     {
                         LRIString = LRIDomain + ":" + Port.ToString() + "/" + Database + "/" + DocumentID;
+                        ServiceLRI = LRIDomain + ":" + Port.ToString() + "/" + Database;
+                        ServiceURI = URI.Remove(URI.Length - DocumentID.Length, DocumentID.Length);
                     }
                     else
                     {
                         LRIString = LRIDomain + "/" + Database + "/" + DocumentID;
+                        ServiceLRI = LRIDomain + "/" + Database;
+                        ServiceURI = URIDomain + "/" + Database;
+                        ServiceURI = URI.Remove(URI.Length - DocumentID.Length, DocumentID.Length);
                     }
                     if (!Version.Latest)
                     {
@@ -153,10 +162,14 @@ namespace LCHARMS
                     if (Port != 80)
                     {
                         URI = URIDomain + ":" + Port.ToString() + "/" + Database + "/" + DocumentID;
+                        ServiceURI = URIDomain + ":" + Port.ToString() + "/" + Database;
+                        ServiceLRI = LRIDomain + ":" + Port.ToString() + "/" + Database;
                     }
                     else
                     {
                         URI = URIDomain + "/" + Database + "/" + DocumentID;
+                        ServiceURI = URIDomain + "/" + Database;
+                        ServiceLRI = LRIDomain + "/" + Database;
                     }
                     if (!Version.Latest)
                     {
@@ -174,7 +187,11 @@ namespace LCHARMS
             {
                 DocumentID = IDPart.Split('#')[0];
                 Version.DocumentID = DocumentID;
-                Version.Version = int.Parse(IDPart.Split('#')[1]);
+                try
+                {
+                    Version.Version = int.Parse(IDPart.Split('#')[1]);
+                }
+                catch (Exception ex) { }
                 Version.Latest = false;
             }
             else

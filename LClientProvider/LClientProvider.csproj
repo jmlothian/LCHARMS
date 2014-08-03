@@ -69,7 +69,6 @@
     <Compile Include="LClientProvider.svc.cs">
       <DependentUpon>LClientProvider.svc</DependentUpon>
     </Compile>
-    <Compile Include="ILClientProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

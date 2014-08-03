@@ -30,6 +30,45 @@ namespace LCHARMS.Client
 
     public class LConnectionManager
     {
+        public T GetProvider<T>(LRI lri) where T : IClientChannel
+        {
+            if (Connections.ContainsKey(lri.ServiceLRI))
+            {
+                try
+                {
+                    Connections[lri.ToString()].Client =
+                        ((ChannelFactory<T>)new ChannelFactory<T>(Connections[lri.ServiceLRI].ChannelBinding, Connections[lri.ServiceLRI].EndpointAddr)).CreateChannel();
+                    return (T)Connections[lri.ServiceLRI].Client;
+                }
+                catch (Exception ex)
+                {
+                    FDebugLog.WriteLog("[LConnectionManager]: Network Fault Creating Channel " + ex.Message + " " + ex.StackTrace);
+                }
+                return default(T);
+            }
+            else
+            {
+                try
+                {
+                    LConnectionInfo info = new LConnectionInfo();
+                    info.EndpointAddr = new EndpointAddress(new Uri("net.tcp://" + lri.ServiceURI),
+                            EndpointIdentity.CreateDnsIdentity(lri.URIDomain));
+                    info.ChannelBinding = new NetTcpBinding();
+                    var myChannelFactory = new ChannelFactory<T>(info.ChannelBinding, info.EndpointAddr);
+                    Connections[lri.ServiceLRI] = info;
+                    Connections[lri.ServiceLRI].Client = myChannelFactory.CreateChannel();
+                    myChannelFactory.Closed += new EventHandler(Connections[lri.ServiceLRI].ConnClosed);
+                    myChannelFactory.Faulted += new EventHandler(Connections[lri.ServiceLRI].ConnFault);
+                    return (T)Connections[lri.ServiceLRI].Client;
+                }
+                catch (Exception ex)
+                {
+                    FDebugLog.WriteLog("[LConnectionManager]: Network Fault Creating Channel " + ex.Message + " " + ex.StackTrace);
+                }
+                return default(T);
+            }
+        }
+
         public ILDocumentManagerChannel GetDocManagerConnection(LRI lri)
         {
             if (Connections.ContainsKey(lri.ToString()))

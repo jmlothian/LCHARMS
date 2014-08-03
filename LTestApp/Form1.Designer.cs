@@ -28,12 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.btnTestDocService = new System.Windows.Forms.Button();
             this.btnCreateDoc = new System.Windows.Forms.Button();
             this.btnTestClient = new System.Windows.Forms.Button();
             this.btnPurgeDB = new System.Windows.Forms.Button();
             this.btnLoadAndStop = new System.Windows.Forms.Button();
+            this.btnClientService = new System.Windows.Forms.Button();
+            this.prog = new System.Windows.Forms.ProgressBar();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // button1
@@ -68,7 +72,7 @@
             // 
             // btnTestClient
             // 
-            this.btnTestClient.Location = new System.Drawing.Point(369, 206);
+            this.btnTestClient.Location = new System.Drawing.Point(367, 46);
             this.btnTestClient.Name = "btnTestClient";
             this.btnTestClient.Size = new System.Drawing.Size(75, 23);
             this.btnTestClient.TabIndex = 3;
@@ -78,7 +82,7 @@
             // 
             // btnPurgeDB
             // 
-            this.btnPurgeDB.Location = new System.Drawing.Point(451, 108);
+            this.btnPurgeDB.Location = new System.Drawing.Point(12, 94);
             this.btnPurgeDB.Name = "btnPurgeDB";
             this.btnPurgeDB.Size = new System.Drawing.Size(75, 23);
             this.btnPurgeDB.TabIndex = 4;
@@ -88,7 +92,7 @@
             // 
             // btnLoadAndStop
             // 
-            this.btnLoadAndStop.Location = new System.Drawing.Point(223, 73);
+            this.btnLoadAndStop.Location = new System.Drawing.Point(173, 46);
             this.btnLoadAndStop.Name = "btnLoadAndStop";
             this.btnLoadAndStop.Size = new System.Drawing.Size(115, 23);
             this.btnLoadAndStop.TabIndex = 5;
@@ -96,11 +100,35 @@
             this.btnLoadAndStop.UseVisualStyleBackColor = true;
             this.btnLoadAndStop.Click += new System.EventHandler(this.btnLoadAndStop_Click);
             // 
+            // btnClientService
+            // 
+            this.btnClientService.Location = new System.Drawing.Point(367, 121);
+            this.btnClientService.Name = "btnClientService";
+            this.btnClientService.Size = new System.Drawing.Size(142, 23);
+            this.btnClientService.TabIndex = 6;
+            this.btnClientService.Text = "Test ClientService";
+            this.btnClientService.UseVisualStyleBackColor = true;
+            this.btnClientService.Click += new System.EventHandler(this.btnClientService_Click);
+            // 
+            // prog
+            // 
+            this.prog.Location = new System.Drawing.Point(307, 206);
+            this.prog.Name = "prog";
+            this.prog.Size = new System.Drawing.Size(202, 23);
+            this.prog.TabIndex = 7;
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(538, 260);
+            this.Controls.Add(this.prog);
+            this.Controls.Add(this.btnClientService);
             this.Controls.Add(this.btnLoadAndStop);
             this.Controls.Add(this.btnPurgeDB);
             this.Controls.Add(this.btnTestClient);
@@ -121,6 +149,9 @@
         private System.Windows.Forms.Button btnTestClient;
         private System.Windows.Forms.Button btnPurgeDB;
         private System.Windows.Forms.Button btnLoadAndStop;
+        private System.Windows.Forms.Button btnClientService;
+        private System.Windows.Forms.ProgressBar prog;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

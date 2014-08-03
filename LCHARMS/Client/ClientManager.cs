@@ -10,6 +10,7 @@ using LCHARMS.Identity;
 using LCHARMS.Hierarchy;
 using LCHARMS.Session;
 using LCHARMS.Collection;
+using LCHARMS.Config;
 
 namespace LCHARMS.Client
 {
@@ -21,6 +22,8 @@ namespace LCHARMS.Client
         public ClientAccountManager ClientAcctManager;
         public IDManager IDMgr;
         public WorkspaceManager WorkspaceMgr;
+        //LServiceHost<LDataProvider, ILDataProvider> DataProvider;
+
         public ClientManager()
         {
             //wire them up in sequence
@@ -28,19 +31,313 @@ namespace LCHARMS.Client
             ClientAcctManager = new ClientAccountManager(IDMgr, DocManager);
             WorkspaceMgr = new WorkspaceManager(ClientAcctManager);
         }
+        public bool CheckSession(ServiceCredentials Creds)
+        {
+            return (ClientAcctManager.ValidSession(Creds.ClientSessionKey, Creds.ClientAccountLRI) == true ? true : false);
+        }
+
         public void AddIdentityToAccount(string ID, UserInfo IdentityToAdd, LRI UserLRI = null)
         {
             ClientAcctManager.AddIdentityToAccount(ID, IdentityToAdd, UserLRI);
         }
-        public ServiceResponse<string> LoginID(LRI userLRI, string passwordHash, bool LoginAll = true)
+        public ServiceResponse<ServiceCredentials> LoginID(LRI userLRI, string passwordHash, bool LoginAll = true)
         {
             return ClientAcctManager.LoginID(userLRI, passwordHash, LoginAll);
         }
-        public ServiceResponse<string> RegisterNewAccount(string ServiceLRI, string DomainLRI, string Username, string passwordHash)
+        public ServiceResponse<ServiceCredentials> RegisterNewAccount(string ServiceLRI, string DomainLRI, string Username, string passwordHash)
         {
             return ClientAcctManager.RegisterNewAccount(ServiceLRI, DomainLRI, Username, passwordHash);
         }
 
+
+        public ServiceResponse<LDocumentHeader> GetDocHeader(ServiceCredentials Credentials, LRI lri)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).GetDocHeader(Credentials, lri);
+            }
+            else
+            {
+                return new ServiceResponse<LDocumentHeader>(true);
+            }
+        }
+
+        public ServiceResponse<LDocumentVersionInfo> GetDocVersionInfo(ServiceCredentials Credentials, LRI lri)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).GetDocVersionInfo(Credentials, lri);
+            }
+            else
+            {
+                return new ServiceResponse<LDocumentVersionInfo>(true);
+            }
+        }
+
+        public ServiceResponse<DocumentPartResponse> GetDocPart(ServiceCredentials Credentials, LRI lri, int Version, int SequenceNumber)
+        {
+            
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).GetDocPart(Credentials, lri, Version, SequenceNumber);
+            }
+            else
+            {
+                return new ServiceResponse<DocumentPartResponse>(true);
+            }
+        }
+
+        public ServiceResponse<DocumentPartResponse> GetDocParts(ServiceCredentials Credentials, LRI lri, int Version)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).GetDocParts(Credentials, lri, Version);
+            }
+            else
+            {
+                return new ServiceResponse<DocumentPartResponse>(true);
+            }
+        }
+
+        public ServiceResponse<List<LDocumentVersionInfo>> GetFileVersionHistory(ServiceCredentials Credentials, LRI lri)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).GetFileVersionHistory(Credentials, lri);
+            }
+            else
+            {
+                return new ServiceResponse<List<LDocumentVersionInfo>>(true);
+            }
+        }
+
+        public ServiceResponse<List<LCollection>> GetCollections(ServiceCredentials Credentials, LRI lri)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).GetCollections(Credentials, lri);
+            }
+            else
+            {
+                return new ServiceResponse<List<LCollection>>(true);
+            }
+        }
+
+        public ServiceResponse<LCollection> GetCurrentCollection(ServiceCredentials Credentials, LRI lri, LRI CollectionLRI)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).GetCurrentCollection(Credentials, lri, CollectionLRI);
+            }
+            else
+            {
+                return new ServiceResponse<LCollection>(true);
+            }
+        }
+
+        public ServiceResponse<LHierarchy> GetCurrentCollectionHierarchy(ServiceCredentials Credentials, LRI lri, LRI CollectionLRI)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).GetCurrentCollectionHierarchy(Credentials, lri, CollectionLRI);
+            }
+            else
+            {
+                return new ServiceResponse<LHierarchy>(true);
+            }
+        }
+
+        public ServiceResponse<bool> AddTag(ServiceCredentials Credentials, LRI lri, string tag)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).AddTag(Credentials, lri, tag);
+            }
+            else
+            {
+                return new ServiceResponse<bool>(true);
+            }
+        }
+
+        public ServiceResponse<bool> RemoveTag(ServiceCredentials Credentials, LRI lri, string tag)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).RemoveTag(Credentials, lri, tag);
+            }
+            else
+            {
+                return new ServiceResponse<bool>(true);
+            }
+        }
+
+        public ServiceResponse<List<string>> GetTags(ServiceCredentials Credentials, LRI lri)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).GetTags(Credentials, lri);
+            }
+            else
+            {
+                return new ServiceResponse<List<string>>(true);
+            }
+        }
+
+        public ServiceResponse<LDocumentHeader> SaveNewVersion(ServiceCredentials Credentials, LRI lri)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).SaveNewVersion(Credentials, lri);
+            }
+            else
+            {
+                return new ServiceResponse<LDocumentHeader>(true);
+            }
+        }
+
+        public ServiceResponse<bool> UpdateDoc(ServiceCredentials Credentials, LRI lri, List<LDocumentPart> parts)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).UpdateDoc(Credentials, lri, parts);
+            }
+            else
+            {
+                return new ServiceResponse<bool>(true);
+            }
+        }
+
+        public ServiceResponse<bool> SavePart(ServiceCredentials Credentials, LRI lri, LDocumentPart part, int SequenceNumber)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).SavePart(Credentials, lri, part, SequenceNumber);
+            }
+            else
+            {
+                return new ServiceResponse<bool>(true);
+            }
+        }
+
+        public ServiceResponse<bool> DeleteFileLC(ServiceCredentials Credentials, LRI lri)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(lri).DeleteFileLC(Credentials, lri);
+            }
+            else
+            {
+                return new ServiceResponse<bool>(true);
+            }
+        }
+
+        public ServiceResponse<LDocumentHeader> NewFile(ServiceCredentials Credentials, string FQDT, string filename, List<string> Tags, string ParentLRI)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(new LRI(LCHARMSConfig.GetSection().LRI)).NewFile(Credentials, FQDT, filename, Tags, ParentLRI);
+            }
+            else
+            {
+                return new ServiceResponse<LDocumentHeader>(true);
+            }
+        }
+
+        public ServiceResponse<bool> AppendChild(ServiceCredentials Credentials, LRI hierarchyLRI, LRI parentLRI, LRI childLRI)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(hierarchyLRI).AppendChild(Credentials, hierarchyLRI, parentLRI, childLRI);
+            }
+            else
+            {
+                return new ServiceResponse<bool>(true);
+            }
+        }
+
+        public ServiceResponse<bool> PrependChild(ServiceCredentials Credentials, LRI hierarchyLRI, LRI parentLRI, LRI childLRI)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(hierarchyLRI).PrependChild(Credentials, hierarchyLRI, parentLRI, childLRI);
+            }
+            else
+            {
+                return new ServiceResponse<bool>(true);
+            }
+        }
+
+        public ServiceResponse<bool> InsertChild(ServiceCredentials Credentials, LRI hierarchyLRI, LRI parentLRI, LRI childLRI, int index)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(hierarchyLRI).InsertChild(Credentials, hierarchyLRI, parentLRI, childLRI, index);
+            }
+            else
+            {
+                return new ServiceResponse<bool>(true);
+            }
+        }
+
+        public ServiceResponse<bool> RemoveChild(ServiceCredentials Credentials, LRI hierarchyLRI, LRI parentLRI, LRI childLRI)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(hierarchyLRI).RemoveChild(Credentials, hierarchyLRI, parentLRI, childLRI);
+            }
+            else
+            {
+                return new ServiceResponse<bool>(true);
+            }
+        }
+
+        public ServiceResponse<LHierarchyNode> GetNextSibling(ServiceCredentials Credentials, LRI hierarchyLRI, LRI childLRI)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(hierarchyLRI).GetNextSibling(Credentials, hierarchyLRI, childLRI);
+            }
+            else
+            {
+                return new ServiceResponse<LHierarchyNode>(true);
+            }
+        }
+
+        public ServiceResponse<LHierarchyNode> GetPreviousSibling(ServiceCredentials Credentials, LRI hierarchyLRI, LRI childLRI)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(hierarchyLRI).GetPreviousSibling(Credentials, hierarchyLRI, childLRI);
+            }
+            else
+            {
+                return new ServiceResponse<LHierarchyNode>(true);
+            }
+        }
+
+        public ServiceResponse<List<LHierarchyNode>> GetChildren(ServiceCredentials Credentials, LRI hierarchyLRI, LRI childLRI)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(hierarchyLRI).GetChildren(Credentials, hierarchyLRI, childLRI);
+            }
+            else
+            {
+                return new ServiceResponse<List<LHierarchyNode>>(true);
+            }
+        }
+
+        public ServiceResponse<LHierarchyNode> GetParent(ServiceCredentials Credentials, LRI hierarchyLRI, LRI childLRI)
+        {
+            if (CheckSession(Credentials))
+            {
+                return ConnMgr.GetProvider<ILDataProviderChannel>(hierarchyLRI).GetParent(Credentials, hierarchyLRI, childLRI);
+            }
+            else
+            {
+                return new ServiceResponse<LHierarchyNode>(true);
+            }
+        }
 
         public string IdentityProvider
         {
@@ -64,183 +361,6 @@ namespace LCHARMS.Client
             {
                 throw new NotImplementedException();
             }
-        }
-
-
-
-        public ServiceResponse<LDocumentHeader> GetDocHeader(ServiceCredentials Credentials, LRI lri)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<LDocumentVersionInfo> GetDocVersionInfo(ServiceCredentials Credentials, LRI lri)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<DocumentPartResponse> GetDocPart(ServiceCredentials Credentials, LRI lri, int Version, int SequenceNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<DocumentPartResponse> GetDocParts(ServiceCredentials Credentials, LRI lri, int Version)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<List<LDocumentVersionInfo>> GetFileVersionHistory(ServiceCredentials Credentials, LRI lri)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<List<LCollection>> GetCollections(ServiceCredentials Credentials, LRI lri)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<LCollection> GetCurrentCollection(ServiceCredentials Credentials, LRI lri, LRI CollectionLRI)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<LHierarchy> GetCurrentCollectionHierarchy(ServiceCredentials Credentials, LRI lri, LRI CollectionLRI)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<bool> AddTag(ServiceCredentials Credentials, LRI lri, string tag)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<bool> RemoveTag(ServiceCredentials Credentials, LRI lri, string tag)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<List<string>> GetTags(ServiceCredentials Credentials, LRI lri)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<LDocumentHeader> SaveNewVersion(ServiceCredentials Credentials, LRI lri)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<bool> UpdateDoc(ServiceCredentials Credentials, LRI lri, List<LDocumentPart> parts)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<bool> SavePart(ServiceCredentials Credentials, LRI lri, LDocumentPart part, int SequenceNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<bool> DeleteFileLC(ServiceCredentials Credentials, LRI lri)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<LDocumentHeader> NewFile(ServiceCredentials Credentials, string FQDT, string filename, List<string> Tags, string ParentLRI)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<bool> AppendChild(ServiceCredentials Credentials, LRI hierarchyLRI, LRI parentLRI, LRI childLRI)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<bool> PrependChild(ServiceCredentials Credentials, LRI hierarchyLRI, LRI parentLRI, LRI childLRI)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<bool> InsertChild(ServiceCredentials Credentials, LRI hierarchyLRI, LRI parentLRI, LRI childLRI, int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<bool> RemoveChild(ServiceCredentials Credentials, LRI hierarchyLRI, LRI parentLRI, LRI childLRI)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<LHierarchyNode> GetNextSibling(ServiceCredentials Credentials, LRI hierarchyLRI, LRI childLRI)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<LHierarchyNode> GetPreviousSibling(ServiceCredentials Credentials, LRI hierarchyLRI, LRI childLRI)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<List<LHierarchyNode>> GetChildren(ServiceCredentials Credentials, LRI hierarchyLRI, LRI childLRI)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceResponse<LHierarchyNode> GetParent(ServiceCredentials Credentials, LRI hierarchyLRI, LRI childLRI)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string RequestParentIDAuth(string ChildUserLRI, string Username, string ParentPINHash, string KeyFromChild, string SessionKey)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SessionInfo CreateIdentity(string ParentLRI, string ParentUser, string ParentPINHash, string username, string passwordhash, string ChildPinHash, string SessionKey)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SessionInfo LoginID(string UserLRI, string passwordhash, string SessionKey = "", bool LoginChildren = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool ValidateParentSession(string ParentLRI, string SessionKey)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool LoginChild(string ParentLRI, string ChildUserLRI, string KeyFromChild, string ParentSessionKey, bool LoginChildren = true)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Logout(string LRI, string SessionKey)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int LCHARMSIDProviderVersion()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Ping()
-        {
-            throw new NotImplementedException();
-        }
-
-        public LRI ParseLRI(string lri, bool IsURI = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public LRI GetUserLRI(string ServiceLRI, string Username, string passwordHash)
-        {
-            throw new NotImplementedException();
-        }
-
-        public LIdentity GetUserIdentity(string ServiceLRI, string Username, string passwordHash)
-        {
-            throw new NotImplementedException();
         }
     }
 }

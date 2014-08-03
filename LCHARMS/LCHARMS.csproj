@@ -53,7 +53,9 @@
     <Compile Include="Client\ClientAccount.cs" />
     <Compile Include="Client\ClientAccountManager.cs" />
     <Compile Include="Client\ClientManager.cs" />
+    <Compile Include="Client\IClientService.cs" />
     <Compile Include="Client\IDManager.cs" />
+    <Compile Include="Client\ILClientProvider.cs" />
     <Compile Include="Client\LConnectionManager.cs" />
     <Compile Include="Collection\LCollection.cs" />
     <Compile Include="Collection\LCollectionMembership.cs" />
@@ -69,6 +71,7 @@
     <Compile Include="Document\ILDataProvider.cs" />
     <Compile Include="Document\ILDocumentManager.cs" />
     <Compile Include="Document\DocumentTransferManager\ILDocumentTransferManager.cs" />
+    <Compile Include="Document\LDataProvider.cs" />
     <Compile Include="Document\LDocCoreAccess.cs" />
     <Compile Include="Document\LDocument.cs" />
     <Compile Include="Document\LDocumentManager.cs" />

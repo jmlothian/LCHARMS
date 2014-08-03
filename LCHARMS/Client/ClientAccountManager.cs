@@ -25,6 +25,15 @@ namespace LCHARMS.Client
         List<string> AccountIDs = new List<string>();
         IDManager IDMgr;
         LDocumentManager DocManager;
+        public bool ValidSession(string SessionKey, LRI AccountLRI)
+        {
+            if (ClientAccountLookupBySessionKey.ContainsKey(SessionKey) && ClientAccountLookupBySessionKey[SessionKey].AccountLRI == AccountLRI)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public ClientAccountManager(IDManager IDMgr, LDocumentManager DocMgr)
         {
             this.IDMgr = IDMgr;
@@ -131,7 +140,7 @@ namespace LCHARMS.Client
         }
 
         //login the ID and other IDs associated with the account.
-        public ServiceResponse<string> LoginID(LRI userLRI, string passwordHash, bool LoginAll = true)
+        public ServiceResponse<ServiceCredentials> LoginID(LRI userLRI, string passwordHash, bool LoginAll = true)
         {
             //get account that matches
             if (ClientAccountLookup.ContainsKey(userLRI))
@@ -139,52 +148,57 @@ namespace LCHARMS.Client
                 //login ID
                 if(IDMgr.LoginWithHash(userLRI,passwordHash))
                 {
-                    //populate ServiceCredentials
-                    ServiceCredentials creds = 
-                        new ServiceCredentials(userLRI.ToString(),IDMgr.Sessions[userLRI.ToString()].Session.SessionKey );
+
                     //get acct
                     ClientAccount acct = ClientAccountLookup[userLRI];
                     //if this is the first login for this account, create a SessionKey
                     if (acct.ClientSessionKey == "")
                     {
                         acct.ClientSessionKey = Guid.NewGuid().ToString();
+
                     }
                     if (LoginAll)
                     {
-                        //if other accounts not logged in, log them in? (LoginAll)
+                        //todo: if other accounts not logged in, log them in? (LoginAll)
                     }
+                    //populate ServiceCredentials
+                    ServiceCredentials creds =
+                        new ServiceCredentials(userLRI.ToString(), IDMgr.Sessions[userLRI.ToString()].Session.SessionKey);
+                    creds.ClientSessionKey = acct.ClientSessionKey;
+                    creds.ClientAccountLRI = acct.AccountLRI;
+                    ClientAccountLookupBySessionKey[acct.ClientSessionKey] = acct;
                     //return session key in the service response
-                    ServiceResponse<string> resp = new ServiceResponse<string>();
-                    resp.ResponseObject = acct.ClientSessionKey;
+                    ServiceResponse<ServiceCredentials> resp = new ServiceResponse<ServiceCredentials>();
+                    resp.ResponseObject = creds;
                     resp.Message = "OK";
                     return resp;
                 } else
                 {
-                    return new ServiceResponse<string>(true);
+                    return new ServiceResponse<ServiceCredentials>(true);
                 }
             }
             else
             {
-                return new ServiceResponse<string>(true);
+                return new ServiceResponse<ServiceCredentials>(true);
             }
         }
-        public ServiceResponse<string> RegisterNewAccount(string ServiceLRI, string DomainLRI, string Username, string passwordHash)
+        public ServiceResponse<ServiceCredentials> RegisterNewAccount(string ServiceLRI, string DomainLRI, string Username, string passwordHash)
         {
             //get LRI from domain / username / hash
             LRI UserLRI = IDMgr.GetUserLRI(new LRI(ServiceLRI), DomainLRI, Username, passwordHash);
             if (UserLRI == null)
             {
-                return new ServiceResponse<string>(true);
+                return new ServiceResponse<ServiceCredentials>(true);
             }
             else
             {
                 if (ClientAccountLookup.ContainsKey(UserLRI))
                 {
-                    ServiceResponse<string> Resp = new ServiceResponse<string>();
+                    ServiceResponse<ServiceCredentials> Resp = new ServiceResponse<ServiceCredentials>();
                     Resp.Error = true;
                     Resp.ErrorCode = 2;
                     Resp.Message = "A user with that LRI is already registered with this system.";
-                    Resp.ResponseObject = "";
+                    Resp.ResponseObject = null;
                     return Resp;
                 }
                 else

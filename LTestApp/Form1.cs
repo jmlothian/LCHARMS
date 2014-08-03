@@ -17,9 +17,10 @@ namespace LTestApp
     public partial class Form1 : Form
     {
         //host the document service so we can persist @#$ASDF between calls.
-        string ServiceAddress = "127.0.0.1:8001/LDocHost";
+        string ServiceAddress = "127.0.0.1:8001/LDocHost/";
+        string ClientServiceAddress = "127.0.0.1:8002/LDocClientHost/";
         LServiceHost<LDocumentService, ILDocumentManager> DocumentService;
-
+        LServiceHost<ClientManager, IClientService> ClientService;
 
 
         public Form1()
@@ -30,6 +31,7 @@ namespace LTestApp
             //create the document service
             // service thread automatically starts on init.  We are basically done in the host.
             DocumentService = new LServiceHost<LDocumentService, ILDocumentManager>("net.tcp://" + ServiceAddress, "net.tcp://" + ServiceAddress, new NetTcpBinding());
+            ClientService = new LServiceHost<ClientManager, IClientService>("net.tcp://" + ClientServiceAddress, "net.tcp://" + ClientServiceAddress, new NetTcpBinding());
 
 
 
@@ -80,7 +82,9 @@ namespace LTestApp
         private void btnTestDocService_Click(object sender, EventArgs e)
         {
             LConnectionManager ConnManager = new LConnectionManager();
-            ILDocumentManagerChannel docmanager = ConnManager.GetDocManagerConnection(new LRI(ServiceAddress, true));
+            DocumentService.WaitForRunning();
+            ILDocumentManagerChannel docmanager2 = ConnManager.GetDocManagerConnection(new LRI(ServiceAddress, true));
+            ILDocumentManagerChannel docmanager = ConnManager.GetProvider<ILDocumentManagerChannel>(new LRI(ServiceAddress, true));
             DocumentPartResponse rep = docmanager.GetDocPart(new LRI("net.sytes.rhalin/doc/#docID"), 0, 1);
 
             //ILDocumentManagerCh ILDocumentManagerChannel channel = LDocumentService.CreateServiceChannel(ServiceAddress);
@@ -133,6 +137,32 @@ namespace LTestApp
         private void btnLoadAndStop_Click(object sender, EventArgs e)
         {
             ClientManager Client = new ClientManager();
+        }
+
+        private void btnClientService_Click(object sender, EventArgs e)
+        {
+            LConnectionManager ConnManager = new LConnectionManager();
+            IClientServiceChannel Client = ConnManager.GetProvider<IClientServiceChannel>(new LRI(ClientServiceAddress, true));
+            //bool FirstUser = Client.CreateCoreID("rhalin", new LRI("localhost:31939/LIdentityProvider.svc"), "password", "pin");
+            SHA1 hasher = SHA1.Create();
+            ClientService.WaitForRunning();
+            Client.RegisterNewAccount(
+                "localhost:31939/LIdentityProvider.svc", 
+                "localhost:31939", 
+                "rhalin", 
+                BitConverter.ToString(hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes("password"))).Replace("-", string.Empty));
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (ClientService != null)
+            {
+                if (ClientService.IsRunning())
+                {
+                    prog.Value = 90;
+                    timer1.Enabled = false;
+                }
+            }
         }
     }
 }

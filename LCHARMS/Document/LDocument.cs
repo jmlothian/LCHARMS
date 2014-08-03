@@ -60,6 +60,7 @@ namespace LCHARMS.Document
     [DataContract]
     public class LDocumentHeader
     {
+        public LDocumentHeader() { } //for serialization
         //internal data
         [DataMember]
         public string _id = "";
@@ -115,6 +116,7 @@ namespace LCHARMS.Document
     [DataContract]
     public class LDocumentPart
     {
+        public LDocumentPart() { }
         //internal ID for this part
         [DataMember]
         public string _id = "";
@@ -140,6 +142,7 @@ namespace LCHARMS.Document
     [DataContract]
     public class LDocumentVersionInfo
     {
+        public LDocumentVersionInfo() { }
         [DataMember]
         public string DocumentID = "";
         [DataMember]
