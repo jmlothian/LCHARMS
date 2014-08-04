@@ -12,10 +12,11 @@ namespace LCHARMS.Logging
         private static int pid = 0;
         public static bool Enabled = true;
         public static string FileName = "";
+		public static Object SyncRoot = new Object();
         private static StreamWriter FileWriter = null;
         public static void WriteLog(string data)
         {
-            lock (FileName)
+			lock (SyncRoot)
             {
                 if (FileWriter == null)
                 {
@@ -31,7 +32,9 @@ namespace LCHARMS.Logging
             if (FileName == "")
             {
                 pid = Process.GetCurrentProcess().Id;
-                FileName = @"c:\logs\" + DateTime.Now.Ticks.ToString() + "-" + pid.ToString() + "-LCHARMS-Debug.txt";
+				if (!Directory.Exists("./logs/"))
+					Directory.CreateDirectory("./logs/");
+                FileName = @"./logs/" + DateTime.Now.Ticks.ToString() + "-" + pid.ToString() + "-LCHARMS-Debug.txt";
             }
             FileWriter = new System.IO.StreamWriter(FileName, true);
         }

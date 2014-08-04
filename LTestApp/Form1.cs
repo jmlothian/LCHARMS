@@ -16,7 +16,7 @@ namespace LTestApp
 {
     public partial class Form1 : Form
     {
-        //host the document service so we can persist @#$ASDF between calls.
+        //host the document service so we can persist stuff between calls.
         string ServiceAddress = "127.0.0.1:8001/LDocHost/";
         string ClientServiceAddress = "127.0.0.1:8002/LDocClientHost/";
         LServiceHost<LDocumentService, ILDocumentManager> DocumentService;

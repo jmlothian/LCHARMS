@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCHARMS", "LCHARMS\LCHARMS.csproj", "{2E48181E-70A2-4459-98DE-01FF1C343CE0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LDataProvider", "LDataProvider\LDataProvider.csproj", "{910E67A5-9D7A-4482-944F-D5FC8625F21B}"
