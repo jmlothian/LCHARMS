@@ -164,5 +164,19 @@ namespace LTestApp
                 }
             }
         }
+
+		private void btnCliProvService_Click(object sender, EventArgs e)
+		{
+			                SHA1 hasher = SHA1.Create();
+			
+				//Client.ClientAcctManager.RegisterNewAccount(
+				//	"localhost:31939/LIdentityProvider.svc", id.DomainLRI,
+				//	id.Username,
+				//	BitConverter.ToString(hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes("password"))).Replace("-", string.Empty)
+				//);
+
+			ClientProv.ClientServiceClient cli = new ClientProv.ClientServiceClient();
+			ServiceResponse<ServiceCredentials> lc = cli.LoginID(new LRI("localhost:31939/LIdentityProvider.svc/~users/e5e100a1-4382-4f1f-88a4-58bbadec302c"), BitConverter.ToString(hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes("password"))).Replace("-", string.Empty), false);
+		}
     }
 }

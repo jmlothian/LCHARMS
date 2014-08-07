@@ -60,6 +60,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\ClientProv\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -76,6 +81,13 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\LCHARMS.Collection.LCollection.datasource" />
+    <None Include="Properties\DataSources\LCHARMS.Document.DocumentPartResponse.datasource" />
+    <None Include="Properties\DataSources\LCHARMS.Document.LDocumentHeader.datasource" />
+    <None Include="Properties\DataSources\LCHARMS.Document.LDocumentVersionInfo.datasource" />
+    <None Include="Properties\DataSources\LCHARMS.Hierarchy.LHierarchy.datasource" />
+    <None Include="Properties\DataSources\LCHARMS.Hierarchy.LHierarchyNode.datasource" />
+    <None Include="Properties\DataSources\LCHARMS.Identity.ServiceCredentials.datasource" />
     <None Include="Properties\DataSources\LCHARMS.LRI.datasource" />
     <None Include="Properties\DataSources\LCHARMS.Session.SessionInfo.datasource" />
     <None Include="Properties\Settings.settings">
@@ -87,6 +99,34 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Service References\ClientProv\LClientProvider.wsdl" />
+    <None Include="Service References\ClientProv\LClientProvider.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClientProv\LClientProvider1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClientProv\LClientProvider2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClientProv\LClientProvider3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClientProv\LClientProvider4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClientProv\LClientProvider5.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClientProv\LClientProvider6.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClientProv\LClientProvider7.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ClientProv\LClientProvider8.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LCHARMS\LCHARMS.csproj">
@@ -96,6 +136,24 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ClientProv\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClientProv\LClientProvider.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClientProv\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClientProv\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClientProv\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,9 +7,27 @@ using System.Runtime.Serialization;
 namespace LCHARMS
 {
     [DataContract]
-    public enum COMPARE_TYPE { NEQ, EQ, LT, GT, LT_EQ, GT_EQ };
+    public enum COMPARE_TYPE { 
+		[EnumMember]
+		NEQ,
+		[EnumMember]
+		EQ,
+		[EnumMember]
+		LT,
+		[EnumMember]
+		GT,
+		[EnumMember]
+		LT_EQ,
+		[EnumMember]
+		GT_EQ 
+	};
     [DataContract]
-    public enum LOGIC_OP { AND, OR };
+    public enum LOGIC_OP {
+		[EnumMember]
+		AND,
+		[EnumMember]
+		OR
+	};
     class Logic
     {
     }

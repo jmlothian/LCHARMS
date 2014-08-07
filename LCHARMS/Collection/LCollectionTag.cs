@@ -31,7 +31,7 @@ namespace LCHARMS.Collection
         [DataMember]
         public LTag Tag = new LTag();
 
-
+		[DataMember]
         private bool Matched = false;
 
         //todo: come back to this, setting up for single-unit negation

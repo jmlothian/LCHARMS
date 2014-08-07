@@ -21,7 +21,7 @@ namespace LClientProvider
     public class LClientProvider : IClientService
     {
         IClientServiceChannel Client;
-        string ClientServiceAddress = "127.0.0.1:8002/LDocClientHost/";
+		string ClientServiceAddress = "127.0.0.1:8002/LDocClientHost/"; //"127.0.0.1:8002/LDocClientHost/"; //"192.168.1.11:5984"
 
         LConnectionManager ConnManager = new LConnectionManager();
         public LClientProvider()
@@ -183,6 +183,7 @@ namespace LClientProvider
             return Client.GetChildren(Credentials, hierarchyLRI, childLRI);
         }
 
+		
         public ServiceResponse<LHierarchyNode> GetParent(ServiceCredentials Credentials, LRI hierarchyLRI, LRI childLRI)
         {
             return Client.GetParent(Credentials, hierarchyLRI, childLRI);
